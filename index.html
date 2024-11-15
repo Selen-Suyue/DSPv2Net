@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="A diffusion module for augmenting robotic manipulation using object motion">
+  <meta name="keywords" content="Robot manipulation, Imitation learning">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> MBA | 物体运动扩散模块 </title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="icon" type="image/png" href="img/oakink_icon.png">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+        <a class="navbar-item" href="https://github.com/Selen-Suyue"> <!-- TO DO add the code url (from selen)-->
+          <span class="icon">
+            <i class="fab fa-github"></i>
+          </span>
+        </a>
+
+        <!-- <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            Related Projects
+          </a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://kailinli.github.io/SemGrasp">
+              SemGrasp: Language guided grasp generation (ECCV24)
+            </a>
+            <a class="navbar-item" href="https://oakink.net/v2">
+              OakInk2 (CVPR2024)
+            </a>
+            <a class="navbar-item" href="#">
+              CHORD: Category-level object recovery (ICCV23)
+            </a>
+            <a class="navbar-item" href="https://github.com/lixiny/POEM">
+              POEM: Multiview mesh recovery (CVPR23)
+            </a>
+            <a class="navbar-item" href="https://github.com/oakink/OakInk-HMR">
+              OakInk-HMR
+            </a>
+            <a class="navbar-item" href="https://github.com/oakink/OakInk-Grasp-Generation">
+              OakInk-Grasp-Generation
+            </a>
+            <a class="navbar-item" href="https://github.com/oakink/Tink">
+              Tink: Interaction Transfer
+            </a>
+
+          </div>
+        </div> -->
+      </div>
+
+    </div>
+  </nav>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="post-title">
+              <img class="left" src="img/logo.png" width="280px" height="auto" alt="logo.png">
+            </h1><br />
+            <h1 class="title is-1 publication-title">Motion Before Action: Diffusing Object Motion
+              as Manipulation Condition</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://selen-suyue.github.io">Yue Su</a><sup>1,2,*</sup>,</span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=WurpqEMAAAAJ&hl=en">Xinyu
+                  Zhan</a><sup>1,*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://tonyfang.net/">Hongjie Fang</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://dirtyharrylyl.github.io/">Yong-Lu Li</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="http://mvig.org">Cewu Lu</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://lixiny.github.io">Lixin Yang</a><sup>1&#9993;</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Shanghai Jiao Tong University,</span>
+              <span class="author-block"><sup>2</sup>Xidian University</span>
+            </div>
+
+            * Equal contribution &nbsp;&nbsp; &#9993; Corresponding author
+
+            <!-- <div style="font-size:30px; font-weight: bold;">
+              CVPR 2022
+            </div> -->
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- <span class="link-block">
+                  <a href="https://openaccess.thecvf.com/content/CVPR2022/html/Yang_OakInk_A_Large-Scale_Knowledge_Repository_for_Understanding_Hand-Object_Interaction_CVPR_2022_paper.html"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span> -->
+                <!-- <span class="link-block">
+                  <a href="https://github.com/oakink/OakInk" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span> -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2411.09658" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img id="teaser" src="img/mba-qualitative.png" class="img-responsive" alt="overview" width="100%" />
+        <h2 class="subtitle has-text-centered">
+          MBA assists robotic manipulation by reenacting the motion representation of objects from the scene.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <!-- <section class="section">
+    <div class="container is-max-desktop">
+      <div class="column is-full-width">
+        <h3 class="title is-3">Update</h3>
+        <ul>
+          <li>
+            <b><tt>Jun,19,2024</tt></b>: &nbsp <a href="https://oakink.net/v2">OakInk2 @ CVPR2024</a> is released !
+          </li>
+          <li>
+            <b><tt>Apr,04,2024</tt></b>: &nbsp OakInk could be easily cloned from Huggingface/Dataset at <a
+              href="https://huggingface.co/datasets/oakink/OakInk-v1">OakInk-v1</a>
+          </li>
+          <li>
+            <b><tt>Dec,11,2023</tt></b>: &nbsp <a href="https://github.com/oakink/OakInk-Grasp-Generation">
+              <strong>Grasp Generation
+              </strong></a> models on OakInk-Shape are released!
+          </li>
+          <li>
+            <b><tt>Feb,11,2023</tt></b>: &nbsp <b>OakBase</b> is released!
+          </li>
+
+          <li>
+            <b><tt>Jan,03,2023</tt></b>: &nbsp <a href="https://github.com/oakink/OakInk-HMR"> <strong>Hand
+                Mesh Recovery
+              </strong></a> models on OakInk-Image are released!
+          </li>
+
+          <li> <b><tt>Oct,18,2022</tt></b>: &nbsp OakInk <b>public v2.1</b> is released! <br />
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+            <details>
+              <summary>expand to see details</summary>
+              Within this update, several artifacts have been fixed, including: wrong poses, time delay, and contact
+              surface mismatches;
+              <b>NOTE</b>:
+              If you downloaded the OakInk dataset before <u>11:00 AM October 18, 2022, UTC</u>,
+              You <b>only</b> need to replace the previous anno.zip by this newly released: <a
+                href="https://forms.gle/g6QEmmCeZYLGaVe29" target="_blank"><span class="icon"> <i
+                    class="fas fa-download"></i>
+                </span>anno_v2.1.zip</a> <i style="color:gray;">(access via Google Forms)</i>,
+              unzip it and keep the same file structures as before, and install the latest
+              <a href="https://github.com/lixiny/OakInk"> <b>OakInk Toolkit</b></a>.
+            </details>
+          </li>
+          <li>
+            <b><tt>Jul,26,2022</tt></b>: &nbsp <a href="https://github.com/KailinLi/Tink"> <strong>Tink
+              </strong></a> has been made public.
+          </li>
+          <li>
+            <b><tt>Jun,28,2022</tt></b>: &nbsp OakInk <b>public v2</b> & <a href="https://github.com/lixiny/OakInk">
+              <b>OakInk Toolkit</b></a> -- a Python dataloader, are released!
+          </li>
+          <li>
+            <b><tt>Mar,03,2022</tt></b>: &nbsp OakInk
+            got accepted by <a href="https://cvpr2022.thecvf.com"><strong>CVPR 2022</strong></a>.
+          </li>
+        </ul>
+
+        <!-- 初始化 Foundation JS -->
+        <script>
+          $(document).ready(function () {
+            $(document).foundation();
+          })
+        </script>
+      </div>
+    </div>
+  </section> -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h3 class="title is-3" style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333;text-align: center;">Abstract</h3>
+      <div class="content has-text-justified" style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+        Inferring object motion representations from observations enhances 
+        the performance of robotic manipulation
+        tasks. This paper introduces a new paradigm for robot imitation
+        learning that generates action sequences by reasoning about
+        object motion from visual observations. We propose MBA, a novel
+        module that employs two cascaded diffusion processes for object
+        motion generation and robot action generation under object
+        motion guidance. MBA first predicts the future pose sequence
+        of the object based on observations, then uses this sequence
+        as a condition to guide robot action generation. Designed as
+        a plug-and-play component, MBA can be flexibly integrated
+        into existing robotic manipulation policies with diffusion action
+        heads. Extensive experiments in both simulated and real-world
+        environments demonstrate that our approach substantially improves the performance of 
+        existing policies across a wide range of manipulation tasks.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h3 class="title is-3" style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Motion Before Action (MBA)</h3>
+      <div class="image-section" style="text-align: center; margin: 20px 0;">
+        <img src="img/pipeline.png" alt="MBA Diagram" style="max-width: 100%; height: auto;">
+      </div>
+      
+      <div class="content has-text-justified" style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+        <p><strong>MBA</strong> 
+        is a novel module that employs <strong>two cascaded diffusion processes</strong> for object motion generation 
+        and robot action generation under object motion guidance. Designed as a plug-and-play component, 
+        MBA can be <strong>flexibly integrated into existing robotic manipulation policies</strong> with diffusion action heads.</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- <section class="section">
+    <div class="container is-max-desktop">
+      <h3 class="title is-3">Download</h3>
+
+      <div id="oakbase-div" class="content has-text-justified">
+        <h4 class="title is-4">OakInk</h4>
+        Download at: <a href="https://huggingface.co/datasets/oakink/OakInk-v1" target="_blank"><span class="icon">
+            <i class="fas fa-download"></i> </span>Hugging Face</a>.
+        <br>
+        For researchers in China, you can download OakInk from the alternative mirror:
+        <a href="https://pan.baidu.com/s/1H2hW1ZXEbNccOUzYX9cPkA" target="_blank"><span class="icon"> <i
+              class="fas fa-download"></i>
+          </span>百度云盘</a> (hrt9)
+        <br>
+      </div>
+      After download all the files, you need to complete the <a href="https://forms.gle/g6QEmmCeZYLGaVe29"
+        target="_blank"><span class="icon"> <i class="fas fa-file-alt"></i>
+        </span>Google Form</a> to get the annotation file.
+      <br>
+      Arrange all zip files into the directory, eg.<code>$OAKINK_DIR/zipped</code> as follow
+      <br>
+      <pre><code>$OAKINK_DIR/zipped
+  ├── OakBase.zip
+  ├── image
+  │   ├── anno_v2.1.zip  # access via Google Forms
+  │   ├── obj.zip
+  │   └── stream_zipped
+  │       ├── oakink_image_v2.z01
+  │       ├── ...
+  │       ├── oakink_image_v2.z10
+  │       └── oakink_image_v2.zip
+  └── shape
+      ├── metaV2.zip
+      ├── OakInkObjectsV2.zip
+      ├── oakink_shape_v2.zip
+      └── OakInkVirtualObjectsV2.zip</code></pre>
+      and follow the <a href="https://github.com/oakink/OakInk/blob/main/docs/datasets.md#download-full-oakink"
+        target="_blank"><span class="icon"> <i class="fab fa-github"></i>
+        </span>instruction</a> to verify checksums and unzip the files.
+  </section> -->
+
+  <!-- <section class="section">
+    <div class="container is-max-desktop content">
+      <h3 class="title is-3">Resources</h3>
+      Details of dataset annotations, please refer to <a
+        href="https://github.com/oakink/OakInk/blob/main/docs/datasets.md#data-documentation" target="_blank"><span
+          class="icon"> <i class="fab fa-github"></i></span>Data documentation</a>.
+      <br>
+      Details of dataset splits for various tasks, please refer to <a
+        href="https://github.com/oakink/OakInk/blob/main/docs/datasets.md#data-splitting" target="_blank"><span
+          class="icon"> <i class="fab fa-github"></i></span>Data splitting</a>.
+      <br>
+      Load OakBase and visualize object parts and attributes, please refer to <a
+        href="https://github.com/oakink/OakInk/blob/main/scripts/demo_oak_base.py" target="_blank"><span class="icon">
+          <i class="fab fa-github"></i></span>demo_oak_base.py</a>.
+      <br>
+      Load OakInk-Image and OakInk-Shape for visualization, please refer to <a
+        href="https://github.com/oakink/OakInk#load-and-visualize" target="_blank"><span class="icon"> <i
+            class="fab fa-github"></i></span>Load and visualize</a>.
+      <br>
+      Train hand mesh recovery models on OakInk-Image, please refer to <a href="https://github.com/oakink/OakInk-HMR"
+        target="_blank"><span class="icon"> <i class="fab fa-github"></i></span>OakInk-HMR</a>.
+      <br>
+      Train grasp generation models on OakInk-Shape, please refer to <a
+        href="https://github.com/oakink/OakInk-Grasp-Generation" target="_blank"><span class="icon"> <i
+            class="fab fa-github"></i></span>OakInk-Grasp-Generation</a>.
+    </div>
+  </section> -->
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h3 class="title is-3" style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700; color: #333;">Citation</h3>
+      <pre style="font-family: 'Roboto Mono', monospace; font-size: 17px;"><code>@misc{su2024motionactiondiffusingobject,
+        title={Motion Before Action: Diffusing Object Motion as Manipulation Condition}, 
+        author={Yue Su and Xinyu Zhan and Hongjie Fang and Yong-Lu Li and Cewu Lu and Lixin Yang},
+        year={2024},
+        archivePrefix={arXiv} 
+  }
+</code></pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <a class="icon-link" href="https://arxiv.org/pdf/2411.09658">
+          <i class="fas fa-file-pdf"></i>
+        </a>
+        <a class="icon-link" href="https://selen-suyue.github.io" class="external-link" disabled>
+          <i class="fab fa-github"></i>
+        </a>
+        <br>
+        website template from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a>
+
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
