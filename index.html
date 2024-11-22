@@ -1,6 +1,238 @@
 <!DOCTYPE html>
 <html>
 
+
+<style>
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2列布局 */
+    gap: 10px;
+    align-items: start; /* 对齐到网格顶部 */
+  }
+  .video-three-row {
+    display: flex;
+    justify-content: space-around; /* 均匀分布视频并保持间距 */
+    align-items: center; /* 垂直居中 */
+  }
+  .video-row {
+    display: flex;
+  }
+
+  .video {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 使得占位符和标题居中对齐 */
+  }
+
+  .video-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 中心对齐 */
+  }
+
+  .video-placeholder {
+    width: 100%;
+    height: 322px; /* 调整为实际视频的高度，以保持布局一致 */
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-icon {
+    font-size: 50px;
+    color: #cccccc;
+  }
+
+  #demo-video-1 {
+    width: 100%; /* 与占位符宽度相同 */
+    display: none; /* 默认不显示，直到通过JS切换 */
+  }
+
+  .video-caption {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 24px;
+    color: #333;
+    width: 100%;
+    order: 1; /* 确保标题始终在视频/占位符下方 */
+  }
+
+  .image-container {
+    display: flex; /* Activates Flexbox layout */
+    justify-content: center; /* Horizontally centers the content */
+    align-items: center; /* Vertically centers the content */
+    flex-wrap: wrap; /* Allows items to wrap as needed */
+  }
+  .image {
+    flex: 1; /* Allows each image to grow and fill the space */
+    margin: 10px; /* Adds some space around each image */
+  }
+  .image img {
+      width: 100%; /* Makes the image fill the container */
+      height: auto; /* Maintains the aspect ratio of the image */
+  }
+
+  .list-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .list-container ul {
+    text-align: left; /* Left-aligns the text in the list */
+    padding: 0; /* Optional: Removes default padding */
+  }
+
+  .list-container li {
+    list-style-type: disc; /* Optional: Ensures bullet points are shown */
+  }
+  .subtitle {
+  margin-top: 30px; 
+  }
+
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV4ZJ9PVSV"></script>  
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV4ZJ9PVSV');
+</script>
+
+<script>
+
+  function updateDemoActions() {
+    var objectSelect = document.getElementById('demo-object');
+    var actionSelect = document.getElementById('demo-action');
+    var actions = {
+        'Refrigerator': ['open(grasp)', 'open(pull)', 'close'],
+        'Drawer': ['open(grasp)', 'open(pull)', 'close'],
+        'ToyCar': ['push', 'pickup', 'putdown'],
+        'Laptop': ['open', 'close'],
+        'Mug': ['pickup', 'putdown'],
+        'GoldSafe': ['open', 'close'],
+        'BrownSafe': ['open', 'close'],
+        'Clothes': ['fold']
+    };
+    var selectedObject = objectSelect.value;
+    actionSelect.innerHTML = '';
+    if (actions[selectedObject]) {
+      actions[selectedObject].forEach(function(action, index) {
+          var option = document.createElement('option');
+          option.value = action;
+          option.text = action;
+          actionSelect.appendChild(option);
+          if (index === 0) {
+              actionSelect.value = action;
+          }
+      });
+    }
+    checkAllSelected()
+  }
+
+  function updateVisActions() {
+    var objectSelect = document.getElementById('vis-object');
+    var actionSelect = document.getElementById('vis-action');
+    var actions = {
+        'Refrigerator': ['open(grasp)', 'open(pull)', 'close'],
+        'Drawer': ['open(grasp)', 'open(pull)', 'close'],
+        'ToyCar': ['push', 'pickup', 'putdown'],
+        'Laptop': ['open', 'close'],
+        'Mug': ['pickup', 'putdown'],
+        'GoldSafe': ['open', 'close'],
+        'BrownSafe': ['open', 'close'],
+        'Clothes': ['fold']
+    };
+    var selectedObject = objectSelect.value;
+    actionSelect.innerHTML = '';
+    if (actions[selectedObject]) {
+      actions[selectedObject].forEach(function(action, index) {
+          var option = document.createElement('option');
+          option.value = action;
+          option.text = action;
+          actionSelect.appendChild(option);
+          if (index === 0) {
+              actionSelect.value = action;
+          }
+      });
+    }
+    checkAllSelected_Vis()
+  }
+
+  function checkAllSelected() {
+    var objectSelected = document.getElementById('demo-object').value;
+    var actionSelected = document.getElementById('demo-action').value;
+    if (objectSelected && actionSelected) {
+        playVideoBasedOnSelection(objectSelected, actionSelected);
+    }
+  }
+  function checkAllSelected_Vis() {
+    var objectSelected = document.getElementById('vis-object').value;
+    var actionSelected = document.getElementById('vis-action').value;
+    if (objectSelected && actionSelected) {
+        DisplayImageBasedOnSelection(objectSelected, actionSelected);
+    }
+  }
+
+  function playVideoBasedOnSelection(object, action) {
+    var obj_ = object
+    if (object=='GoldSafe' || object=='BrownSafe') obj_ = 'Safe';
+    else if (object=='Drawer' || object=='Refrigerator') obj_ = 'StorageFurniture';
+    var videoSource_human = 'media/human_video/' + obj_ + '.mp4';
+    var videoElement_human = document.getElementById('demo-video-1');
+    videoElement_human.src = videoSource_human;
+    videoElement_human.play();
+
+    var videoSource_1 = 'media/demos/' + object + '_' + action + '_1.mp4';
+    var videoElement_1 = document.getElementById('demo-video-2');
+    videoElement_1.src = videoSource_1;
+    videoElement_1.play();
+    var videoSource_2 = 'media/demos/' + object + '_' + action + '_2.mp4';
+    var videoElement_2 = document.getElementById('demo-video-3');
+    videoElement_2.src = videoSource_2;
+    videoElement_2.play();
+    var videoSource_3 = 'media/demos/' + object + '_' + action + '_3.mp4';
+    var videoElement_3 = document.getElementById('demo-video-4');
+    videoElement_3.src = videoSource_3;
+    videoElement_3.play();
+  }
+
+  function DisplayImageBasedOnSelection(object, action) {
+    var imageSource_1 = 'media/figures/robot_vis_general_flow/' + object + '_' + action + '_scene.png';
+    document.getElementById("vis-image-1").src = imageSource_1;
+    var imageSource_2 = 'media/figures/robot_vis_general_flow/' + object + '_' + action + '_robot.png';
+    document.getElementById("vis-image-2").src = imageSource_2;
+  }
+
+  function updateHOIVisualization() {
+    var group = document.getElementById("hoi-group-select").value;
+    var imagePath = "media/figures/hoi_vis_group/hoi_vis_group_" + group + '.png'; 
+    document.getElementById("visualization-image").src = imagePath;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    updateDemoActions();
+    updateHOIVisualization();
+    updateVisActions();
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('toggle-human-video').addEventListener('click', function() {
+      var videoElement = document.getElementById('demo-video-1');
+      var placeholderElement = document.querySelector('#human-video-container .video-placeholder');
+      if (videoElement.style.display === 'none' || videoElement.style.display === '') {
+        videoElement.style.display = 'block';
+        placeholderElement.style.display = 'none';
+      } else {
+        videoElement.style.display = 'none';
+        placeholderElement.style.display = 'flex';
+      }
+    });
+  });
+</script>
+
+
 <head>
   <meta charset="utf-8">
   <meta name="description" content="A diffusion module for augmenting robotic manipulation using object motion">
@@ -39,7 +271,7 @@
 
 <body>
 
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <!-- <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
         <span aria-hidden="true"></span>
@@ -49,7 +281,7 @@
     </div>
     <div class="navbar-menu">
       <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-        <a class="navbar-item" href="https://github.com/Selen-Suyue"> <!-- TO DO add the code url (from selen)-->
+        <a class="navbar-item" href="https://github.com/Selen-Suyue"> 
           <span class="icon">
             <i class="fab fa-github"></i>
           </span>
@@ -58,7 +290,7 @@
       </div>
 
     </div>
-  </nav>
+  </nav> -->
 
 
   <section class="hero">
@@ -121,16 +353,67 @@
     </div>
   </section>
 
-  <section class="hero teaser">
-    <div class="container is-max-desktop">
-      <div class="hero-body">
-        <img id="teaser" src="img/mba-qualitative.png" class="img-responsive" alt="overview" width="100%" />
+  <section class="hero is-light is-small">
+    <div class="hero-body">
+      <div class="container">
+        <div id="results-carousel" class="carousel results-carousel">
+          <div class="item">
+            <video poster="" autoplay muted loop height="100%">
+              <source src="video\video_render\fast_cut_load_0.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <video poster="" autoplay muted loop height="100%">
+              <source src="video\video_render\fast_cut_load_1.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <video poster="" autoplay muted loop height="100%">
+              <source src="video\video_render\fast_open_drawer_load_0.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <video poster="" autoplay muted loop height="100%">
+              <source src="video\video_render\fast_open_drawer_load_1.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <video poster="" autoplay muted loop height="100%">
+              <source src="video\video_render\fast_place_load_0.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <video poster="" autoplay muted loop height="100%">
+              <source src="video\video_render\fast_place_load_1.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <video poster="" autoplay muted loop height="100%">
+              <source src="video\video_render\fast_pour_2_load_0.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <video poster="" autoplay muted loop height="100%">
+              <source src="video\video_render\fast_pour_2_load_1.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+          
+        </div>
         <h2 class="subtitle has-text-centered">
-          MBA assists robotic manipulation by reenacting the motion representation of objects from the scene.
+          <strong>MBA assists robotic manipulation by predicting the motion representation of objects from the scene.</strong>
         </h2>
       </div>
     </div>
   </section>
+  
 
 
   <script>
@@ -140,7 +423,7 @@
   </script>
   </div>
   </div>
-  </section> -->
+  </section> 
   <section class="section">
     <div class="container is-max-desktop">
       <h3 class="title is-3"
@@ -192,9 +475,12 @@
           <h3 class="title is-3"
             style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Presentation
           </h3>
+          <div class="image-section" style="text-align: center; margin: 20px 0;">
+            <img src="img/mba-qualitative.png" alt="MBA Diagram" style="max-width: 100%; height: auto;">
+          </div>
           <div class="content has-text-justified" style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
             <p>
-              <strong>MBA</strong>'s great advantages in manipulation are reflected in two points. When the manipulated object is
+              MBA's great advantages in manipulation are reflected in two points. When the manipulated object is
               stationary,
               whose prediction of the object's pose is equivalent to making an accurate pose estimation of the object to
               help
@@ -393,7 +679,9 @@
         <br>
         website template from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a>
         <br>
-        project logo from <a href="https://coopbb8.icu/">Ruihan Wu</a>
+        project logo from <a href="https://coopbb8.icu/">ruihan wu</a>
+        <br>
+        slide video template from <a href="https://general-flow.github.io">general-flow</a>
       </div>
     </div>
   </footer>
