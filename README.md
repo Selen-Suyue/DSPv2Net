@@ -1,2 +1,2 @@
-# MBA.github.io
+# MBApage
 Project page for MBA
