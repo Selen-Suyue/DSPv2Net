@@ -2,256 +2,12 @@
 <html>
 
 
-<style>
-  .video-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2列布局 */
-    gap: 10px;
-    align-items: start; /* 对齐到网格顶部 */
-  }
-  .video-three-row {
-    display: flex;
-    justify-content: space-around; /* 均匀分布视频并保持间距 */
-    align-items: center; /* 垂直居中 */
-  }
-  .video-row {
-    display: flex;
-  }
-
-  .video {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* 使得占位符和标题居中对齐 */
-  }
-
-  .video-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* 中心对齐 */
-  }
-
-  .video-placeholder {
-    width: 100%;
-    height: 322px; /* 调整为实际视频的高度，以保持布局一致 */
-    background-color: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .video-icon {
-    font-size: 50px;
-    color: #cccccc;
-  }
-
-  #demo-video-1 {
-    width: 100%; /* 与占位符宽度相同 */
-    display: none; /* 默认不显示，直到通过JS切换 */
-  }
-
-  .video-caption {
-    text-align: center;
-    margin-top: 5px;
-    font-size: 24px;
-    color: #333;
-    width: 100%;
-    order: 1; /* 确保标题始终在视频/占位符下方 */
-  }
-
-  .image-container {
-    display: flex; /* Activates Flexbox layout */
-    justify-content: center; /* Horizontally centers the content */
-    align-items: center; /* Vertically centers the content */
-    flex-wrap: wrap; /* Allows items to wrap as needed */
-  }
-  .image {
-    flex: 1; /* Allows each image to grow and fill the space */
-    margin: 10px; /* Adds some space around each image */
-  }
-  .image img {
-      width: 100%; /* Makes the image fill the container */
-      height: auto; /* Maintains the aspect ratio of the image */
-  }
-
-  .list-container {
-    display: flex;
-    justify-content: center;
-  }
-
-  .list-container ul {
-    text-align: left; /* Left-aligns the text in the list */
-    padding: 0; /* Optional: Removes default padding */
-  }
-
-  .list-container li {
-    list-style-type: disc; /* Optional: Ensures bullet points are shown */
-  }
-  .subtitle {
-  margin-top: 30px; 
-  }
-
-</style>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV4ZJ9PVSV"></script>  
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-FV4ZJ9PVSV');
-</script>
-
-<script>
-
-  function updateDemoActions() {
-    var objectSelect = document.getElementById('demo-object');
-    var actionSelect = document.getElementById('demo-action');
-    var actions = {
-        'Refrigerator': ['open(grasp)', 'open(pull)', 'close'],
-        'Drawer': ['open(grasp)', 'open(pull)', 'close'],
-        'ToyCar': ['push', 'pickup', 'putdown'],
-        'Laptop': ['open', 'close'],
-        'Mug': ['pickup', 'putdown'],
-        'GoldSafe': ['open', 'close'],
-        'BrownSafe': ['open', 'close'],
-        'Clothes': ['fold']
-    };
-    var selectedObject = objectSelect.value;
-    actionSelect.innerHTML = '';
-    if (actions[selectedObject]) {
-      actions[selectedObject].forEach(function(action, index) {
-          var option = document.createElement('option');
-          option.value = action;
-          option.text = action;
-          actionSelect.appendChild(option);
-          if (index === 0) {
-              actionSelect.value = action;
-          }
-      });
-    }
-    checkAllSelected()
-  }
-
-  function updateVisActions() {
-    var objectSelect = document.getElementById('vis-object');
-    var actionSelect = document.getElementById('vis-action');
-    var actions = {
-        'Refrigerator': ['open(grasp)', 'open(pull)', 'close'],
-        'Drawer': ['open(grasp)', 'open(pull)', 'close'],
-        'ToyCar': ['push', 'pickup', 'putdown'],
-        'Laptop': ['open', 'close'],
-        'Mug': ['pickup', 'putdown'],
-        'GoldSafe': ['open', 'close'],
-        'BrownSafe': ['open', 'close'],
-        'Clothes': ['fold']
-    };
-    var selectedObject = objectSelect.value;
-    actionSelect.innerHTML = '';
-    if (actions[selectedObject]) {
-      actions[selectedObject].forEach(function(action, index) {
-          var option = document.createElement('option');
-          option.value = action;
-          option.text = action;
-          actionSelect.appendChild(option);
-          if (index === 0) {
-              actionSelect.value = action;
-          }
-      });
-    }
-    checkAllSelected_Vis()
-  }
-
-  function checkAllSelected() {
-    var objectSelected = document.getElementById('demo-object').value;
-    var actionSelected = document.getElementById('demo-action').value;
-    if (objectSelected && actionSelected) {
-        playVideoBasedOnSelection(objectSelected, actionSelected);
-    }
-  }
-  function checkAllSelected_Vis() {
-    var objectSelected = document.getElementById('vis-object').value;
-    var actionSelected = document.getElementById('vis-action').value;
-    if (objectSelected && actionSelected) {
-        DisplayImageBasedOnSelection(objectSelected, actionSelected);
-    }
-  }
-
-  function playVideoBasedOnSelection(object, action) {
-    var obj_ = object
-    if (object=='GoldSafe' || object=='BrownSafe') obj_ = 'Safe';
-    else if (object=='Drawer' || object=='Refrigerator') obj_ = 'StorageFurniture';
-    var videoSource_human = 'media/human_video/' + obj_ + '.mp4';
-    var videoElement_human = document.getElementById('demo-video-1');
-    videoElement_human.src = videoSource_human;
-    videoElement_human.play();
-
-    var videoSource_1 = 'media/demos/' + object + '_' + action + '_1.mp4';
-    var videoElement_1 = document.getElementById('demo-video-2');
-    videoElement_1.src = videoSource_1;
-    videoElement_1.play();
-    var videoSource_2 = 'media/demos/' + object + '_' + action + '_2.mp4';
-    var videoElement_2 = document.getElementById('demo-video-3');
-    videoElement_2.src = videoSource_2;
-    videoElement_2.play();
-    var videoSource_3 = 'media/demos/' + object + '_' + action + '_3.mp4';
-    var videoElement_3 = document.getElementById('demo-video-4');
-    videoElement_3.src = videoSource_3;
-    videoElement_3.play();
-  }
-
-  function DisplayImageBasedOnSelection(object, action) {
-    var imageSource_1 = 'media/figures/robot_vis_general_flow/' + object + '_' + action + '_scene.png';
-    document.getElementById("vis-image-1").src = imageSource_1;
-    var imageSource_2 = 'media/figures/robot_vis_general_flow/' + object + '_' + action + '_robot.png';
-    document.getElementById("vis-image-2").src = imageSource_2;
-  }
-
-  function updateHOIVisualization() {
-    var group = document.getElementById("hoi-group-select").value;
-    var imagePath = "media/figures/hoi_vis_group/hoi_vis_group_" + group + '.png'; 
-    document.getElementById("visualization-image").src = imagePath;
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    updateDemoActions();
-    updateHOIVisualization();
-    updateVisActions();
-  });
-
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('toggle-human-video').addEventListener('click', function() {
-      var videoElement = document.getElementById('demo-video-1');
-      var placeholderElement = document.querySelector('#human-video-container .video-placeholder');
-      if (videoElement.style.display === 'none' || videoElement.style.display === '') {
-        videoElement.style.display = 'block';
-        placeholderElement.style.display = 'none';
-      } else {
-        videoElement.style.display = 'none';
-        placeholderElement.style.display = 'flex';
-      }
-    });
-  });
-</script>
-
-
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="A diffusion module for augmenting robotic manipulation using object motion">
+  <meta name="description" content="DSPv2: Improved Dense Policy for Effective and Generalizable Whole-body Mobile Manipulation">
   <meta name="keywords" content="Robot manipulation, Imitation learning">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> MBA | Motion Before Action </title>
-
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-
-    gtag('js', new Date());
-
-    gtag('config', 'G-PYVRSFMDRL');
-  </script>
+  <title> DSPv2 | Whole-Body Mobile Policy </title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="icon" type="image/png" href="img/icon.jpg">
@@ -267,32 +23,319 @@
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
+
+  <style>
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2列布局 */
+      gap: 10px;
+      align-items: start; /* 对齐到网格顶部 */
+    }
+    .video-three-row {
+      display: flex;
+      justify-content: space-around; /* 均匀分布视频并保持间距 */
+      align-items: center; /* 垂直居中 */
+    }
+    .video-row {
+      display: flex;
+    }
+
+    .video {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* 使得占位符和标题居中对齐 */
+    }
+
+    .video-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* 中心对齐 */
+    }
+
+    .video-placeholder {
+      width: 100%;
+      height: 322px; /* 调整为实际视频的高度，以保持布局一致 */
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-icon {
+      font-size: 50px;
+      color: #cccccc;
+    }
+
+    #demo-video-1 {
+      width: 100%; /* 与占位符宽度相同 */
+      display: none; /* 默认不显示，直到通过JS切换 */
+    }
+
+    .video-caption {
+      text-align: center;
+      margin-top: 5px;
+      font-size: 24px;
+      color: #333;
+      width: 100%;
+      order: 1; /* 确保标题始终在视频/占位符下方 */
+    }
+
+    .image-container {
+      display: flex; /* Activates Flexbox layout */
+      justify-content: center; /* Horizontally centers the content */
+      align-items: center; /* Vertically centers the content */
+      flex-wrap: wrap; /* Allows items to wrap as needed */
+    }
+    .image {
+      flex: 1; /* Allows each image to grow and fill the space */
+      margin: 10px; /* Adds some space around each image */
+    }
+    .image img {
+        width: 100%; /* Makes the image fill the container */
+        height: auto; /* Maintains the aspect ratio of the image */
+    }
+
+    .list-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .list-container ul {
+      text-align: left; /* Left-aligns the text in the list */
+      padding: 0; /* Optional: Removes default padding */
+    }
+
+    .list-container li {
+      list-style-type: disc; /* Optional: Ensures bullet points are shown */
+    }
+    .subtitle {
+    margin-top: 30px;
+    }
+
+    .vertical-video-grid {
+      display: flex;
+      justify-content: center; /* 水平居中所有视频项目 */
+      align-items: flex-start; /* 顶部对齐 */
+      gap: 25px; /* 【调大】视频之间的间距 */
+      flex-wrap: wrap; /* 在小屏幕上允许换行 */
+      margin-top: 20px;
+    }
+
+    .video-item {
+      flex: 1 1 200px;
+      /* 【核心修改】将最大宽度调整为 220px */
+      max-width: 220px !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 视频的“手机”边框样式 */
+    .video-frame-vertical {
+      width: 100%;
+      border-radius: 20px; /* 【调大】边角弧度 */
+      overflow: hidden;
+      border: 7px solid #363636; /* 【调大】边框厚度 */
+      box-shadow: 0 5px 12px rgba(0,0,0,0.18); /* 【增强】阴影效果 */
+      background-color: #363636;
+    }
+
+    /* 竖屏视频本身的样式 (无需改动) */
+    .vertical-video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* 视频下方的标题样式 */
+    .video-caption-vertical {
+      margin-top: 12px; /* 【调大】标题与视频的距离 */
+      font-weight: 700;
+      font-size: 16px; /* 【调大】字体大小 */
+      color: #4a4a4a;
+    }
+  .horizontal-video-grid {
+    display: grid;
+    /* 核心修改：将 1fr 改为 400px，限制了最大宽度 */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+    gap: 20px;
+    margin-top: 20px;
+    /* 新增：当视频无法填满一行时，使其整体居中 */
+    justify-content: center;
+  }
+  .horizontal-video-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* 这是主要修改的部分 */
+  .video-frame-horizontal {
+    width: 100%;
+    border-radius: 15px; /* 增大了圆角，但比手机的略小 */
+    overflow: hidden;
+    border: 7px solid #363636; /* 设置了和手机一样的深灰色边框 */
+    box-shadow: 0 5px 12px rgba(0,0,0,0.18); /* 增强了阴影效果 */
+    background-color: #363636; /* 背景也设置为深灰色 */
+  }
+
+  .horizontal-video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .video-caption-horizontal {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #555;
+  }
+  </style>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV4ZJ9PVSV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FV4ZJ9PVSV');
+  </script>
+
+  <script>
+
+    function updateDemoActions() {
+      var objectSelect = document.getElementById('demo-object');
+      var actionSelect = document.getElementById('demo-action');
+      var actions = {
+          'Refrigerator': ['open(grasp)', 'open(pull)', 'close'],
+          'Drawer': ['open(grasp)', 'open(pull)', 'close'],
+          'ToyCar': ['push', 'pickup', 'putdown'],
+          'Laptop': ['open', 'close'],
+          'Mug': ['pickup', 'putdown'],
+          'GoldSafe': ['open', 'close'],
+          'BrownSafe': ['open', 'close'],
+          'Clothes': ['fold']
+      };
+      var selectedObject = objectSelect.value;
+      actionSelect.innerHTML = '';
+      if (actions[selectedObject]) {
+        actions[selectedObject].forEach(function(action, index) {
+            var option = document.createElement('option');
+            option.value = action;
+            option.text = action;
+            actionSelect.appendChild(option);
+            if (index === 0) {
+                actionSelect.value = action;
+            }
+        });
+      }
+      checkAllSelected()
+    }
+
+    function updateVisActions() {
+      var objectSelect = document.getElementById('vis-object');
+      var actionSelect = document.getElementById('vis-action');
+      var actions = {
+          'Refrigerator': ['open(grasp)', 'open(pull)', 'close'],
+          'Drawer': ['open(grasp)', 'open(pull)', 'close'],
+          'ToyCar': ['push', 'pickup', 'putdown'],
+          'Laptop': ['open', 'close'],
+          'Mug': ['pickup', 'putdown'],
+          'GoldSafe': ['open', 'close'],
+          'BrownSafe': ['open', 'close'],
+          'Clothes': ['fold']
+      };
+      var selectedObject = objectSelect.value;
+      actionSelect.innerHTML = '';
+      if (actions[selectedObject]) {
+        actions[selectedObject].forEach(function(action, index) {
+            var option = document.createElement('option');
+            option.value = action;
+            option.text = action;
+            actionSelect.appendChild(option);
+            if (index === 0) {
+                actionSelect.value = action;
+            }
+        });
+      }
+      checkAllSelected_Vis()
+    }
+
+    function checkAllSelected() {
+      var objectSelected = document.getElementById('demo-object').value;
+      var actionSelected = document.getElementById('demo-action').value;
+      if (objectSelected && actionSelected) {
+          playVideoBasedOnSelection(objectSelected, actionSelected);
+      }
+    }
+    function checkAllSelected_Vis() {
+      var objectSelected = document.getElementById('vis-object').value;
+      var actionSelected = document.getElementById('vis-action').value;
+      if (objectSelected && actionSelected) {
+          DisplayImageBasedOnSelection(objectSelected, actionSelected);
+      }
+    }
+
+    function playVideoBasedOnSelection(object, action) {
+      var obj_ = object
+      if (object=='GoldSafe' || object=='BrownSafe') obj_ = 'Safe';
+      else if (object=='Drawer' || object=='Refrigerator') obj_ = 'StorageFurniture';
+      var videoSource_human = 'media/human_video/' + obj_ + '.mp4';
+      var videoElement_human = document.getElementById('demo-video-1');
+      videoElement_human.src = videoSource_human;
+      videoElement_human.play();
+
+      var videoSource_1 = 'media/demos/' + object + '_' + action + '_1.mp4';
+      var videoElement_1 = document.getElementById('demo-video-2');
+      videoElement_1.src = videoSource_1;
+      videoElement_1.play();
+      var videoSource_2 = 'media/demos/' + object + '_' + action + '_2.mp4';
+      var videoElement_2 = document.getElementById('demo-video-3');
+      videoElement_2.src = videoSource_2;
+      videoElement_2.play();
+      var videoSource_3 = 'media/demos/' + object + '_' + action + '_3.mp4';
+      var videoElement_3 = document.getElementById('demo-video-4');
+      videoElement_3.src = videoSource_3;
+      videoElement_3.play();
+    }
+
+    function DisplayImageBasedOnSelection(object, action) {
+      var imageSource_1 = 'media/figures/robot_vis_general_flow/' + object + '_' + action + '_scene.png';
+      document.getElementById("vis-image-1").src = imageSource_1;
+      var imageSource_2 = 'media/figures/robot_vis_general_flow/' + object + '_' + action + '_robot.png';
+      document.getElementById("vis-image-2").src = imageSource_2;
+    }
+
+    function updateHOIVisualization() {
+      var group = document.getElementById("hoi-group-select").value;
+      var imagePath = "media/figures/hoi_vis_group/hoi_vis_group_" + group + '.png';
+      document.getElementById("visualization-image").src = imagePath;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateDemoActions();
+      updateHOIVisualization();
+      updateVisActions();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('toggle-human-video').addEventListener('click', function() {
+        var videoElement = document.getElementById('demo-video-1');
+        var placeholderElement = document.querySelector('#human-video-container .video-placeholder');
+        if (videoElement.style.display === 'none' || videoElement.style.display === '') {
+          videoElement.style.display = 'block';
+          placeholderElement.style.display = 'none';
+        } else {
+          videoElement.style.display = 'none';
+          placeholderElement.style.display = 'flex';
+        }
+      });
+    });
+  </script>
 </head>
 
 <body>
-
-  <!-- <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-    <div class="navbar-menu">
-      <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-        <a class="navbar-item" href="https://github.com/Selen-Suyue"> 
-          <span class="icon">
-            <i class="fab fa-github"></i>
-          </span>
-        </a>
-
-      </div>
-
-    </div>
-  </nav> -->
-
-
   <section class="hero">
     <div class="hero-body">
       <div class="container is-max-desktop">
@@ -301,46 +344,49 @@
             <h1 class="post-title">
               <img class="left" src="img/logo.png" width="280px" height="auto" alt="logo.png">
             </h1><br />
-            <h1 class="title is-1 publication-title">
-              <span style="color: #F8CDAC;">M</span>otion 
-              <span style="color: #F8CDAC;">B</span>efore 
-              <span style="color: #F8CDAC;">A</span>ction: Diffusing Object Motion 
-              as Manipulation Condition
+            <h1 class="title is-2 publication-title">
+              <span style="color: #125FA3;">DSPv2:</span> Improved Dense Policy for Effective and 
+              Generalizable <span style="color: #125FA3;">Whole-body Mobile Manipulation</span>
             </h1>
             <div class="is-size-5 publication-authors">
               <span class="author-block">
-                <a href="https://selen-suyue.github.io">Yue Su</a><sup>1,2,*</sup>,</span>
+                <a href="https://selen-suyue.github.io">Yue Su</a><sup>1,2,3</sup>,</span>
               <span class="author-block">
-                <a href="https://scholar.google.com/citations?user=WurpqEMAAAAJ&hl=en">Xinyu
-                  Zhan</a><sup>1,*</sup>,
+                <a href="https://lin-shan.com/">Chubin
+                  Zhang</a><sup>2,4</sup>,
               </span>
               <span class="author-block">
-                <a href="https://tonyfang.net/">Hongjie Fang</a><sup>1</sup>,
+                <a href="https://ch3cook-fdu.github.io/">Sijin Chen</a><sup>1</sup>,
               </span>
               <span class="author-block">
-                <a href="https://dirtyharrylyl.github.io/">Yong-Lu Li</a><sup>1</sup>,
+                <a href="">Liufan Tan</a><sup>2</sup>,
               </span>
               <span class="author-block">
-                <a href="http://mvig.org">Cewu Lu</a><sup>1</sup>,
+                <a href="https://andytang15.github.io/">Yansong Tang</a><sup>4</sup>,
               </span>
               <span class="author-block">
-                <a href="https://lixiny.github.io">Lixin Yang</a><sup>1&dagger;</sup>
+                <a href="https://scholar.google.com/citations?user=mt5mvZ8AAAAJ&hl=en">Jianan Wang</a><sup>2*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://xh-liu.github.io/">Xihui Liu</a><sup>1&dagger;</sup>
               </span>
             </div>
 
             <div class="is-size-5 publication-authors">
-              <span class="author-block"><sup>1</sup>Shanghai Jiao Tong University,</span>
-              <span class="author-block"><sup>2</sup>Xidian University</span>
+              <span class="author-block"><sup>1</sup>The University of Hong Kong</span>
+              <span class="author-block"><sup>2</sup>Astribot</span></span>
+              <span class="author-block"><sup>3</sup>Xidian University</span>
+              <span class="author-block"><sup>4</sup>Tsinghua University</span>
             </div>
 
-            * Equal contribution &nbsp;&nbsp; &dagger; Corresponding author <br>
-            <div style="font-size: 30px; font-family: 'Comic Sans MS', cursive, sans-serif; font-weight: bold; text-transform: uppercase; color: pink; background: linear-gradient(135deg, #FFB6C1, #FF69B4); 
-            -webkit-background-clip: text; color: transparent; text-align: center; 
-            letter-spacing: 3px; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);">IEEE RA-L 2025</div>
+            * Project Leader &nbsp;&nbsp; &dagger; Corresponding author <br>
+            <!-- <div style="font-size: 30px; font-family: 'Comic Sans MS', cursive, sans-serif; font-weight: bold; text-transform: uppercase; color: pink; background: linear-gradient(135deg, #FFB6C1, #FF69B4);
+            -webkit-background-clip: text; color: transparent; text-align: center;
+            letter-spacing: 3px; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);">ICRA 2026</div> -->
             <div class="column has-text-centered">
               <div class="publication-links">
                 <span class="link-block">
-                <a href="https://ieeexplore.ieee.org/abstract/document/11027642"
+                <a href=""
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-file-pdf"></i>
@@ -349,7 +395,7 @@
                 </a>
               </span>
                 <span class="link-block">
-                  <a href="https://arxiv.org/abs/2411.09658" class="external-link button is-normal is-rounded is-dark">
+                  <a href="" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="ai ai-arxiv"></i>
                     </span>
@@ -357,7 +403,7 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <a href="https://github.com/Selen-Suyue/MBA" class="external-link button is-normal is-rounded is-dark">
+                  <a href="https://github.com/Selen-Suyue/DSPv2" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="fab fa-github"></i>
                     </span>
@@ -365,75 +411,12 @@
                   </a>
                 </span>
               </div>
-
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <section class="hero is-light is-small">
-    <div class="hero-body">
-      <div class="container">
-        <div id="results-carousel" class="carousel results-carousel">
-          <div class="item">
-            <video poster="" autoplay muted loop height="100%">
-              <source src="video\video_render\fast_cut_load_0.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-          <div class="item">
-            <video poster="" autoplay muted loop height="100%">
-              <source src="video\video_render\fast_cut_load_1.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-          <div class="item">
-            <video poster="" autoplay muted loop height="100%">
-              <source src="video\video_render\fast_open_drawer_load_0.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-          <div class="item">
-            <video poster="" autoplay muted loop height="100%">
-              <source src="video\video_render\fast_open_drawer_load_1.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-          <div class="item">
-            <video poster="" autoplay muted loop height="100%">
-              <source src="video\video_render\fast_place_load_0.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-          <div class="item">
-            <video poster="" autoplay muted loop height="100%">
-              <source src="video\video_render\fast_place_load_1.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-          <div class="item">
-            <video poster="" autoplay muted loop height="100%">
-              <source src="video\video_render\fast_pour_2_load_0.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-          <div class="item">
-            <video poster="" autoplay muted loop height="100%">
-              <source src="video\video_render\fast_pour_2_load_1.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-          
-        </div>
-        <h2 class="subtitle has-text-centered">
-          <strong>MBA assists robotic manipulation by predicting the motion representation of objects from the scene.</strong>
-        </h2>
-      </div>
-    </div>
-  </section>
-  
 
 
   <script>
@@ -443,295 +426,235 @@
   </script>
   </div>
   </div>
-  </section> 
+  </section>
+   <section class="section">
+    <div class="container is-max-desktop">
+      <h3 class="title is-3"
+        style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Effective Perception, Generalizable
+      Manipulation and Coherent Whole-Body Actions</h3>
+      <div class="image-section" style="text-align: center; margin: 20px 0;">
+        <img src="img/teaser.png" alt="DSPv2 Diagram" style="max-width: 100%; height: auto;">
+      </div>
+
+      <div class="content has-text-justified"
+        style="font-family: 'Arial', sans-serif; font-size: 18px; line-height: 1.6; color: #444;">
+        <p><strong>DSPv2</strong> is a whole-body mobile manipulation policy that achieves generalizable performance by fusing multi-view
+2D semantic perception with 3D spatial awareness, and generates coherent whole-body actions via dense action head.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container is-max-desktop">
       <h3 class="title is-3"
         style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333;text-align: center;">Abstract</h3>
-        <div class="columns is-centered has-text-centered">
+        <!-- <div class="columns is-centered has-text-centered">
           <div class="column is-four-fifths">
             <br>
             <div class="publication-video">
               <iframe width="560" height="315" src="https://www.youtube.com/embed/nPqLqk2naNc?si=PkTCflv9Suf3cDrH&hd=1&vq=hd1080" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
           </div>
-        </div>
+        </div> -->
       <div class="content has-text-justified"
         style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
-        Inferring object motion representations from observations enhances
-        the performance of robotic manipulation
-        tasks. This paper introduces a new paradigm for robot imitation
-        learning that generates action sequences by reasoning about
-        object motion from visual observations. We propose MBA, a novel
-        module that employs two cascaded diffusion processes for object
-        motion generation and robot action generation under object
-        motion guidance. MBA first predicts the future pose sequence
-        of the object based on observations, then uses this sequence
-        as a condition to guide robot action generation. Designed as
-        a plug-and-play component, MBA can be flexibly integrated
-        into existing robotic manipulation policies with diffusion action
-        heads. Extensive experiments in both simulated and real-world
-        environments demonstrate that our approach substantially improves the performance of
-        existing policies across a wide range of manipulation tasks.
+        Learning whole-body mobile manipulation via
+        imitation is essential for generalizing robotic skills to diverse
+        environments and complex tasks. However, this goal is hin-
+        dered by significant challenges, particularly in effectively pro-
+        cessing complex observation, achieving robust generalization,
+        and generating coherent actions. To address these issues, we
+        propose DSPv2, a novel policy architecture. DSPv2 introduces
+        an effective encoding scheme that aligns 3D spatial features
+        with multi-view 2D semantic features. This fusion enables the
+        policy to achieve broad generalization while retaining the fine-
+        grained perception necessary for precise control. Furthermore,
+        we extend the Dense Policy paradigm to the whole-body
+        mobile manipulation domain, demonstrating its effectiveness
+        in generating coherent and precise actions for the whole-
+        body robotic platform. Extensive experiments show that our
+        method significantly outperforms existing approaches in both
+        task performance and generalization ability.
       </div>
     </div>
   </section>
-
-  <section class="section">
+   <section class="section">
     <div class="container is-max-desktop">
       <h3 class="title is-3"
-        style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Motion Before
-        Action (MBA)</h3>
+        style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Overview of DSPv2</h3>
       <div class="image-section" style="text-align: center; margin: 20px 0;">
-        <img src="img/pipeline.png" alt="MBA Diagram" style="max-width: 100%; height: auto;">
+        <img src="img/pipeline.png" alt="DSPv2 Diagram" style="max-width: 100%; height: auto;">
       </div>
 
       <div class="content has-text-justified"
-        style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
-        <p ><strong>MBA</strong>
-          is a novel module that employs <strong>two cascaded diffusion processes</strong> for object motion generation
-          and robot action generation under object motion guidance. Designed as a plug-and-play component,
-          MBA can be <strong>flexibly integrated into existing robotic manipulation policies</strong> with diffusion
-          action heads.</p>
+        style="font-family: 'Arial', sans-serif; font-size: 18px; line-height: 1.6; color: #444;">
+        First, a sparse 3D encoder processes the xyz point cloud, which is projected from the head-cam
+        to the base, to obtain voxel-level feature tokens. A 2D vision foundation model is also used to acquire patch-
+        level feature maps. Subsequently, a Q-former is designed to query multi-view semantic
+        features from feature maps for the voxels and fuse them with spatial features, based on the positional information of the
+        voxels and patches. Finally, the resulting features are fed into a dense head to generate the future action sequence in a
+        bidirectional autoregressive paradigm,
+        thus reduces the error amplification between components and enhances the coherence of whole-body actions.
       </div>
     </div>
   </section>
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div >
-          <h3 class="title is-3"
-            style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Presentation
-          </h3>
-          <div class="image-section" style="text-align: center; margin: 20px 0;">
-            <img src="img/mba-qualitative.png" alt="MBA Diagram" style="max-width: 100%; height: auto;">
-          </div>
-          <div class="content has-text-justified" style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
-            <p>
-              MBA's great advantages in manipulation are reflected in two points. When the manipulated object is
-              stationary,
-              whose prediction of the object's pose is equivalent to making an accurate pose estimation of the object to
-              help
-              the robot arm capture the object. When the object is in motion, the object trajectory reflected by the
-              Pose sequence
-              can be used as a priori for the robot's motion sequence to guide and calibrate the robot's movements.
-            </p>
-          </div>
-
-          <div class="content has-text-justified">
-            <h4 class="has-text-centered">Cut Clay at 4x Speed</h4>
-            <div id="wrapper">
-              <video id="home1" autoplay muted loop playsinline width=49.7%>
-                <source type="video/mp4" src="video\cut_mba.mp4" />
-              </video>
-              <video id="home2" autoplay muted loop playsinline width=49.7% >
-                <source type="video/mp4" src="video\cut_baseline.mp4" />
-              </video>
-              <div class="clear"></div>
-              <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span> 
-                  &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                  &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
-                  MBA (ours)</span></p>
-                <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span>Baseline 
-                  &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                  &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                  &nbsp; &nbsp;
-                </span></p>
-              </div>
-              <div class="clear"></div>
-
-              <div class="content has-text-justified">
-                <h4 class="has-text-centered">Open Drawer at 4x Speed</h4>
-                <div id="wrapper">
-                  <video id="home1" autoplay muted loop playsinline width=49.7%>
-                    <source type="video/mp4" src="video\drawer_mba.mp4" />
-                  </video>
-                  <video id="home2" autoplay muted loop playsinline width=49.7% >
-                    <source type="video/mp4" src="video\drawer_baseline.mp4" />
-                  </video>
-                  <div class="clear"></div>
-                  <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                    <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span> 
-                      &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                      &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
-                      MBA (ours)</span></p>
-                    <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span>Baseline 
-                      &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                      &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      &nbsp; &nbsp;
-                    </span></p>
-                  </div>
-                  <div class="clear"></div>
-                
-
-                <div class="content has-text-justified">
-                    <h4 class="has-text-centered">Put Bread into Pot at 4x Speed</h4>
-                    <div id="wrapper">
-                      <video id="home1" autoplay muted loop playsinline width=49.7%>
-                        <source type="video/mp4" src="video\bread_mba.mp4" />
-                      </video>
-                      <video id="home2" autoplay muted loop playsinline width=49.7% >
-                        <source type="video/mp4" src="video\bread_baseline.mp4" />
-                      </video>
-                      <div class="clear"></div>
-                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span> 
-                          &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                          &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
-                          MBA (ours)</span></p>
-                        <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span>Baseline 
-                          &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                          &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                          &nbsp; &nbsp;
-                        </span></p>
-                      </div>
-                      <div class="clear"></div>
-
-
-
-                  <div class="content has-text-justified">
-                    <h4 class="has-text-centered">Pour Balls at 4x Speed</h4>
-                    <div id="wrapper">
-                      <video id="home1" autoplay muted loop playsinline width=49.7%>
-                        <source type="video/mp4" src="video\pour_mba.mp4" />
-                      </video>
-                      <video id="home2" autoplay muted loop playsinline width=49.7% >
-                        <source type="video/mp4" src="video\pour_baseline.mp4" />
-                      </video>
-                      <div class="clear"></div>
-                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span> 
-                          &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                          &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
-                          MBA (ours)</span></p>
-                        <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span>Baseline 
-                          &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                          &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                          &nbsp; &nbsp;
-                        </span></p>
-                      </div>
-                  <div class="clear"></div>
-
-              <h4 class="has-text-centered" style="margin-top: 20px;">Deal with different kinds of objects and complete different kinds of tasks</h4>
-
-              <div class="content has-text-justified"  style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
-                <p>
-                  We conduct comparative experiments with MBA on three
-                  2D and 3D robotic manipulation policies with diffusion
-                  action heads, demonstrating substantial performance improvements across various tasks. These tasks,
-                  comprising 57 tasks from 3 simulation benchmarks and 4
-                  real-world tasks, involve articulated object manipulation,
-                  soft and rigid body manipulation, tool use, non-tool use, and
-                  diverse action patterns. Results show that MBA consistently
-                  enhances the performance of such policies in both simulated
-                  and real-world environments.
-                </p>
-              </div>
-            </div>
-          </div>
+<!-- video video video -->
   </section>
-  
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div >
-          <h3 class="title is-3"
-            style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Failure Cases
-          </h3>
-          <div class="content has-text-justified" style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
-            <p>
-              Due to the insufficient number of 50 expert demonstrations, MBA's ability to accurately estimate 
-              object pose sequences lacks robustness, which can lead to task execution failures. For example, 
-              in the Open Drawer task shown below, when the target is positioned at the image edge, resulting 
-              in point cloud occlusions, MBA fails to grasp the drawer handle. Similarly, in the Put Bread task, 
-              the presence of numerous clutter items in the scene negatively impacts the policy's execution.
-            </p>
-          </div>
-
-          <div class="content has-text-justified">
-            <h4 class="has-text-centered">Failure Cases at 4x Speed</h4>
-            <div id="wrapper">
-              <video id="home1" autoplay muted loop playsinline width=49.7%>
-                <source type="video/mp4" src="video\drawerfail.mp4" />
+      <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="subtitle has-text-centered">
+          <strong>Pick and Place with Light and Spatial Generalization</strong>
+        </h2>
+        <div class="horizontal-video-grid">
+          <div class="horizontal-video-item">
+            <div class="video-frame-horizontal">
+              <video poster="" autoplay muted loop class="horizontal-video">
+                <source src="video\4xpick.mp4" type="video/mp4">
               </video>
-              <video id="home2" autoplay muted loop playsinline width=49.7% >
-                <source type="video/mp4" src="video\breadfail.mp4" />
-              </video>
-              <div class="clear"></div>
-              <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span> 
-                  &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                  &nbsp;&nbsp;&nbsp; 
-                  Open Drawer</span></p>
-                <p style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px"><span>Put Bread into Pot 
-                  &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                  &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
-                  &nbsp; &nbsp;
-                </span></p>
-              </div>
-              <div class="clear"></div>
-                
             </div>
+            <p class="video-caption-horizontal">Pick and Place</p>
           </div>
-  </section>
-
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h3 class="title is-3"
-        style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333;text-align: center;">Test Recording</h3>
-        <div class="columns is-centered has-text-centered">
-          <div class="column is-four-fifths">
-            <br>
-            <div class="publication-video">
-              <iframe width="560" height="315" src="https://www.youtube.com/embed/BZEmq_lnl3w?si=C4xg-C2kQq347tCg&hd=1&vq=hd1080" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <div class="horizontal-video-item">
+            <div class="video-frame-horizontal">
+              <video poster="" autoplay muted loop class="horizontal-video">
+                <source src="video\4xpick_g.mp4" type="video/mp4">
+              </video>
             </div>
+            <p class="video-caption-horizontal">After Light Down and Table Lifted Up</p>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+    <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+        <!-- Section Title -->
+        <h2 class="subtitle has-text-centered">
+          <strong>Cart Pushing with Scene-level Generalization</strong>
+        </h2>
+        <div class="vertical-video-grid">
+          <div class="video-item">
+            <div class="video-frame-vertical">
+              <video poster="" autoplay muted loop class="vertical-video">
+                <source src="video\4xcart.mp4" type="video/mp4">
+              </video>
+            </div>
+            <p class="video-caption-vertical">In-domain Scene</p>
+          </div>
+          <div class="video-item">
+            <div class="video-frame-vertical">
+              <video poster="" autoplay muted loop class="vertical-video">
+                <source src="video\4xcart_2.mp4" type="video/mp4">
+              </video>
+            </div>
+            <p class="video-caption-vertical">In-domain Scene</p>
+          </div>
+          <div class="video-item">
+            <div class="video-frame-vertical">
+              <video poster="" autoplay muted loop class="vertical-video">
+                <source src="video\4xcart_g.mp4" type="video/mp4">
+              </video>
+            </div>
+            <p class="video-caption-vertical">Out-of-domain Scene</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="subtitle has-text-centered">
+          <strong>Bowling & Sort with Object Shape Generalization</strong>
+        </h2>
+        <div class="vertical-video-grid">
+          <div class="video-item">
+            <div class="video-frame-vertical">
+              <video poster="" autoplay muted loop class="vertical-video">
+                <source src="video\4xbowling.mp4" type="video/mp4">
+              </video>
+            </div>
+            <p class="video-caption-vertical">Bowling</p>
+          </div>
+          <div class="video-item">
+            <div class="video-frame-vertical">
+              <video poster="" autoplay muted loop class="vertical-video">
+                <source src="video\4xsort.mp4" type="video/mp4">
+              </video>
+            </div>
+            <p class="video-caption-vertical">Original Bucket Size</p>
+          </div>
+          <div class="video-item">
+            <div class="video-frame-vertical">
+              <video poster="" autoplay muted loop class="vertical-video">
+                <source src="video\4xsort_g.mp4" type="video/mp4">
+              </video>
+            </div>
+            <p class="video-caption-vertical">Changed Bucket Size</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
+  <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="subtitle has-text-centered">
+          <strong>Deliver (Transfer on out-of-domain robot and platform)</strong>
+        </h2>
+        <div class="vertical-video-grid">
+          <div class="video-item">
+            <div class="video-frame-vertical">
+              <video poster="" autoplay muted loop class="vertical-video">
+                <source src="video\4xblue.mp4" type="video/mp4">
+              </video>
+            </div>
+            <p class="video-caption-vertical">Original Setup</p>
+          </div>
+          <div class="video-item">
+            <div class="video-frame-vertical">
+              <video poster="" autoplay muted loop class="vertical-video">
+                <source src="video\4xred.mp4" type="video/mp4">
+              </video>
+            </div>
+            <p class="video-caption-vertical">Obeject Color Change</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <section class="section" id="BibTeX">
+  <!-- <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <h3 class="title is-3"
         style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;">Citation</h3>
       <pre style="font-family: 'Roboto Mono', monospace; font-size: 17px;"><code>@ARTICLE{MBA,
   author={Su, Yue and Zhan, Xinyu and Fang, Hongjie and Li, Yong-Lu and Lu, Cewu and Yang, Lixin},
-  journal={IEEE Robotics and Automation Letters}, 
-  title={Motion Before Action: Diffusing Object Motion as Manipulation Condition}, 
+  journal={IEEE Robotics and Automation Letters},
+  title={Motion Before Action: Diffusing Object Motion as Manipulation Condition},
   year={2025},
   volume={10},
   number={7},
   pages={7428-7435},
  doi={10.1109/LRA.2025.3577424}}</code></pre>
     </div>
-  </section>
+  </section> -->
 
   <footer class="footer">
     <div class="container">
       <div class="content has-text-centered">
-        <a class="icon-link" href="https://arxiv.org/pdf/2411.09658">
+        <!-- <a class="icon-link" href="https://arxiv.org/pdf/2411.09658">
           <i class="fas fa-file-pdf"></i>
-        </a>
-        <a class="icon-link" href="https://github.com/Selen-Suyue/MBA" class="external-link" disabled>
+        </a> -->
+        <a class="icon-link" href="https://github.com/Selen-Suyue/DSPv2" class="external-link" disabled>
           <i class="fab fa-github"></i>
         </a>
-        <br>
-        website template from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a>
-        <br>
-        project logo from <a href="https://coopbb8.icu/">ruihan wu</a>
-        <br>
-        slide video template from <a href="https://general-flow.github.io">general-flow</a>
       </div>
     </div>
   </footer>
 
 </body>
-
 </html>
